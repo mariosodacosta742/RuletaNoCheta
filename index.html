@@ -3,145 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruleta AloneGarciatv - Battle Royale</title>
+    <title>Battle Royale - AloneGarciatv</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@400;900&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .cyber-font { font-family: 'Orbitron', sans-serif; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
         
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes bounce-in {
-            0% { transform: scale(0.5); opacity: 0; }
-            60% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
+        /* Animación de golpe en la flecha al detectar segmento */
+        @keyframes arrow-bump {
+            0% { transform: translateX(-50%) translateY(0) scale(1); }
+            50% { transform: translateX(-50%) translateY(10px) scale(1.2); }
+            100% { transform: translateX(-50%) translateY(0) scale(1); }
         }
-        .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
-        .animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
+        .bump { animation: arrow-bump 0.1s ease-out; }
+
         #winnerModal { display: none; }
         #winnerModal.show { display: flex; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-900 text-white overflow-hidden flex flex-col md:flex-row">
+<body class="min-h-screen text-white overflow-hidden flex flex-col md:flex-row">
 
     <canvas id="confettiCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></canvas>
 
-    <div class="w-full md:w-1/3 p-6 bg-slate-800/80 backdrop-blur-md border-r border-slate-700 flex flex-col z-20 shadow-2xl h-screen md:h-auto overflow-hidden relative">
-        <h1 class="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 flex items-center gap-2">
-            <i data-lucide="skull" class="text-pink-500"></i> Battle Royale
+    <div class="w-full md:w-1/3 p-6 bg-slate-900 border-r border-slate-800 flex flex-col z-20 shadow-2xl h-screen md:h-auto overflow-hidden relative">
+        <h1 class="text-3xl font-black mb-1 text-pink-500 cyber-font italic">
+            Alonso Battle Royale
         </h1>
-        <p class="text-slate-400 text-sm mb-6">El que sale, ¡es eliminado! Solo uno quedará en pie.</p>
+        <p class="text-slate-500 text-[10px] tracking-[0.3em] uppercase mb-6">AloneGarciatv Edition</p>
 
         <div class="mb-6 flex gap-2">
             <form id="addForm" class="flex-1 flex gap-2">
                 <input 
                     type="text" 
                     id="newItemInput"
-                    placeholder="Nombre del participante..."
-                    maxlength="20"
-                    class="flex-1 px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:border-pink-500 text-white"
+                    placeholder="Nuevo objetivo..."
+                    class="flex-1 px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 focus:outline-none focus:border-pink-500 text-white"
                 >
-                <button type="submit" class="bg-pink-600 hover:bg-pink-500 p-2 rounded-lg transition-transform active:scale-95 text-white">
+                <button type="submit" class="bg-pink-600 hover:bg-pink-500 p-2 rounded-lg transition-transform active:scale-95">
                     <i data-lucide="plus"></i>
                 </button>
             </form>
-            <button id="btnReset" title="Reiniciar lista" class="bg-slate-600 hover:bg-slate-500 p-2 rounded-lg transition-colors">
-                <i data-lucide="refresh-cw"></i>
+            <button id="btnReset" title="Limpiar todo" class="bg-slate-700 hover:bg-red-600 p-2 rounded-lg">
+                <i data-lucide="trash-2"></i>
             </button>
         </div>
 
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            <h3 id="optionsCount" class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">
-                PARTICIPANTES (0)
+            <h3 id="optionsCount" class="text-[10px] font-bold text-slate-400 mb-3 tracking-widest uppercase">
+                OBJETIVOS: 0
             </h3>
             <ul id="itemList" class="space-y-2"></ul>
         </div>
     </div>
 
-    <div class="flex-1 relative flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-900 to-slate-900 overflow-hidden h-screen">
-        <div class="absolute w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-3xl -z-0 animate-pulse top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-
-        <div class="relative z-10 scale-90 md:scale-100">
-            <div class="absolute top-1/2 right-[-25px] transform -translate-y-1/2 z-20 drop-shadow-lg">
-                <svg width="60" height="60" viewBox="0 0 60 60" class="transform rotate-180">
-                    <path d="M30 0 L60 30 L30 60 L30 0" fill="#fbbf24" stroke="#fff" stroke-width="3"/>
+    <div class="flex-1 relative flex flex-col items-center justify-center p-4 bg-slate-950">
+        
+        <div class="relative z-10">
+            <div id="wheelArrow" class="absolute top-[-40px] left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <path d="M0 0 L60 0 L30 45 L0 0" fill="#ec4899" stroke="#fff" stroke-width="2"/>
                 </svg>
             </div>
 
-            <div id="wheelContainer" class="rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)] border-4 border-slate-800 transition-transform duration-[4000ms] ease-[cubic-bezier(0.1, 0, 0.2, 1)]">
-                <canvas id="wheelCanvas" class="rounded-full w-[340px] h-[340px] md:w-[500px] md:h-[500px]"></canvas>
+            <div id="wheelContainer" class="rounded-full border-[12px] border-slate-900 shadow-[0_0_80px_rgba(0,0,0,0.9)] transition-transform duration-[6000ms] ease-[cubic-bezier(0.1,0,0.1,1)]">
+                <canvas id="wheelCanvas" class="rounded-full w-[340px] h-[340px] md:w-[520px] md:h-[520px]"></canvas>
             </div>
         </div>
 
-        <div class="mt-12 z-10">
-            <button id="btnSpin" class="px-12 py-4 rounded-full text-2xl font-black tracking-widest uppercase text-white transition-all transform shadow-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 active:translate-y-1 disabled:opacity-50 disabled:bg-slate-600">
-                <span id="spinText">¡ELIMINAR UNO!</span>
-            </button>
-        </div>
+        <button id="btnSpin" class="mt-12 px-16 py-5 rounded-none cyber-font text-2xl font-black italic tracking-widest text-white bg-pink-600 hover:bg-pink-500 transition-all disabled:opacity-20 border-b-4 border-pink-900 active:border-b-0 active:translate-y-1">
+            ELIMINAR OBJETIVO
+        </button>
 
-        <div id="winnerModal" class="absolute inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
-            <div class="bg-white text-slate-900 p-8 rounded-2xl shadow-2xl max-w-sm text-center transform animate-bounce-in relative mx-4">
-                <div id="modalBar" class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
-                <div id="modalIcon" class="mx-auto w-16 h-16 text-red-500 mb-4 flex justify-center items-center">
-                    <i data-lucide="skull" width="64" height="64"></i>
-                </div>
-                <h2 id="modalTitle" class="text-xl font-bold text-slate-500 uppercase tracking-wide">¡Eliminado!</h2>
-                <p id="winnerText" class="text-4xl font-black text-slate-900 my-4 break-words">Nombre</p>
-                <button id="btnCloseModal" class="mt-4 px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 w-full">Continuar</button>
+        <div id="winnerModal" class="fixed inset-0 z-50 items-center justify-center bg-black/90 backdrop-blur-xl">
+            <div class="bg-slate-900 border-t-4 border-pink-600 p-12 text-center max-w-sm w-full mx-4 shadow-2xl">
+                <div id="modalIcon" class="mb-4 flex justify-center text-pink-500"></div>
+                <h2 id="modalTitle" class="text-xs cyber-font text-slate-500 tracking-[0.4em] mb-4">SISTEMA_LOG</h2>
+                <p id="winnerText" class="text-5xl font-black mb-8 break-words uppercase cyber-font"></p>
+                <button id="btnCloseModal" class="w-full py-4 bg-pink-600 text-white font-bold hover:bg-pink-500 transition-all cyber-font italic">PROSEGUIR</button>
             </div>
         </div>
     </div>
 
     <script>
-        const state = {
-            items: ["Jugador 1", "Jugador 2", "Jugador 3", "Jugador 4", "Jugador 5", "Jugador 6"],
-            lastEliminatedIdx: null,
-            isSpinning: false,
-            rotation: 0
+        // --- MOTOR AUDIO ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(f, t, v, d) {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + d);
+        }
+
+        const sounds = {
+            tick: () => playSound(200, 'square', 0.05, 0.05),
+            eliminated: () => { playSound(50, 'sawtooth', 0.3, 0.8); playSound(100, 'sine', 0.2, 0.5); },
+            win: () => [261, 329, 392, 523].forEach((f, i) => setTimeout(() => playSound(f, 'triangle', 0.2, 0.6), i * 150))
         };
 
+        const state = { items: [], lastEliminatedIdx: null, isSpinning: false, rotation: 0 };
         const dom = {
             canvas: document.getElementById('wheelCanvas'),
             container: document.getElementById('wheelContainer'),
+            arrow: document.getElementById('wheelArrow'),
             itemList: document.getElementById('itemList'),
             input: document.getElementById('newItemInput'),
-            form: document.getElementById('addForm'),
             spinBtn: document.getElementById('btnSpin'),
             modal: document.getElementById('winnerModal'),
             winnerText: document.getElementById('winnerText'),
             modalTitle: document.getElementById('modalTitle'),
-            modalBar: document.getElementById('modalBar'),
-            modalIcon: document.getElementById('modalIcon'),
-            closeModal: document.getElementById('btnCloseModal'),
-            optionsCount: document.getElementById('optionsCount'),
-            resetBtn: document.getElementById('btnReset'),
-            confettiCanvas: document.getElementById('confettiCanvas')
+            modalIcon: document.getElementById('modalIcon')
         };
-
-        function generateColors(length) {
-            return Array.from({length}, (_, i) => `hsl(${(i * (360 / length)) % 360}, 70%, 55%)`);
-        }
 
         function renderList() {
             dom.itemList.innerHTML = '';
-            dom.optionsCount.textContent = `PARTICIPANTES (${state.items.length})`;
-            const colors = generateColors(state.items.length);
-
+            document.getElementById('optionsCount').textContent = `OBJETIVOS: ${state.items.length}`;
             state.items.forEach((item, idx) => {
                 const li = document.createElement('li');
-                li.className = 'flex justify-between items-center p-3 bg-slate-700 rounded-lg border-l-4 animate-fade-in';
-                li.style.borderColor = colors[idx];
-                li.innerHTML = `
-                    <span class="truncate font-medium">${item}</span>
-                    <button onclick="removeItem(${idx})" class="text-slate-400 hover:text-red-400 transition-colors">
-                        <i data-lucide="x" width="18"></i>
-                    </button>`;
+                li.className = 'flex justify-between items-center p-3 bg-slate-800/50 border-r-2 border-pink-600';
+                li.innerHTML = `<span class="font-bold text-xs uppercase">${item}</span>
+                    <button onclick="removeItem(${idx})" class="text-slate-500 hover:text-red-500"><i data-lucide="x" width="14"></i></button>`;
                 dom.itemList.appendChild(li);
             });
             lucide.createIcons();
@@ -151,142 +142,108 @@
 
         function drawWheel() {
             const ctx = dom.canvas.getContext('2d');
-            const size = 1000;
-            dom.canvas.width = size; dom.canvas.height = size;
-            const centerX = size/2, centerY = size/2, radius = size/2 - 20;
-
-            ctx.clearRect(0, 0, size, size);
+            const size = 1000; dom.canvas.width = size; dom.canvas.height = size;
+            const centerX = 500, centerY = 500, radius = 480;
+            ctx.clearRect(0,0,size,size);
             if (state.items.length === 0) return;
 
             const arcSize = (2 * Math.PI) / state.items.length;
-            const colors = generateColors(state.items.length);
-
             state.items.forEach((item, i) => {
-                const angle = i * arcSize;
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
-                ctx.fillStyle = colors[i];
+                ctx.arc(centerX, centerY, radius, i * arcSize, (i + 1) * arcSize);
+                ctx.fillStyle = i % 2 === 0 ? '#0f172a' : '#1e293b';
                 ctx.fill();
-                ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 4; ctx.stroke();
+                ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 2; ctx.stroke();
 
                 ctx.save();
                 ctx.translate(centerX, centerY);
-                ctx.rotate(angle + arcSize/2);
+                ctx.rotate(i * arcSize + arcSize/2);
                 ctx.textAlign = "right"; ctx.fillStyle = "#fff";
-                ctx.font = "bold 45px Inter";
-                ctx.fillText(item, radius - 40, 15);
+                ctx.font = "900 45px Orbitron";
+                ctx.fillText(item.toUpperCase(), radius - 60, 15);
                 ctx.restore();
             });
+        }
 
-            // Centro
-            ctx.beginPath(); ctx.arc(centerX, centerY, 40, 0, Math.PI*2);
-            ctx.fillStyle = "#1e293b"; ctx.fill();
-            ctx.strokeStyle = "#fff"; ctx.lineWidth = 5; ctx.stroke();
+        let lastTickIdx = -1;
+        function checkTick() {
+            if (!state.isSpinning) return;
+            const style = window.getComputedStyle(dom.container);
+            const matrix = new WebKitCSSMatrix(style.transform);
+            const angle = (Math.atan2(matrix.m12, matrix.m11) * 180 / Math.PI + 360) % 360;
+            
+            // Calculamos qué segmento está bajo la flecha (que está a 270 grados en el círculo trigonométrico)
+            const arcDeg = 360 / state.items.length;
+            const currentIdx = Math.floor(((270 - angle + 360) % 360) / arcDeg);
+
+            if (currentIdx !== lastTickIdx) {
+                sounds.tick();
+                dom.arrow.classList.remove('bump');
+                void dom.arrow.offsetWidth;
+                dom.arrow.classList.add('bump');
+                lastTickIdx = currentIdx;
+            }
+            requestAnimationFrame(checkTick);
         }
 
         function spin() {
             if (state.isSpinning || state.items.length < 2) return;
+            audioCtx.resume();
             state.isSpinning = true;
             dom.spinBtn.disabled = true;
             
-            const extraDegrees = Math.floor(Math.random() * 360);
-            state.rotation += (360 * 8) + extraDegrees;
+            const extra = Math.floor(Math.random() * 360);
+            state.rotation += (360 * 8) + extra;
             dom.container.style.transform = `rotate(${state.rotation}deg)`;
+            requestAnimationFrame(checkTick);
         }
 
         dom.container.addEventListener('transitionend', () => {
             state.isSpinning = false;
-            const actualRotation = state.rotation % 360;
-            const arcSize = 360 / state.items.length;
-            const index = Math.floor(((360 - actualRotation) % 360) / arcSize);
+            const arcDeg = 360 / state.items.length;
+            const finalAngle = state.rotation % 360;
+            // La flecha está arriba (270°), calculamos quién quedó ahí
+            const index = Math.floor(((270 - finalAngle + 360) % 360) / arcDeg);
             
             state.lastEliminatedIdx = index;
-            const victim = state.items[index];
-
-            // Configurar modal para ELIMINACIÓN
-            dom.modalTitle.textContent = "¡Eliminado!";
-            dom.modalTitle.className = "text-xl font-bold text-red-500 uppercase tracking-wide";
-            dom.modalBar.className = "absolute top-0 left-0 w-full h-2 bg-red-600";
-            dom.winnerText.textContent = victim;
-            dom.modalIcon.innerHTML = '<i data-lucide="skull" width="64" height="64"></i>';
-            
+            dom.winnerText.textContent = state.items[index];
+            dom.winnerText.className = "text-5xl font-black mb-8 text-pink-500 cyber-font";
+            dom.modalIcon.innerHTML = '<i data-lucide="skull" width="80" height="80"></i>';
+            sounds.eliminated();
             dom.modal.classList.add('show');
             lucide.createIcons();
         });
 
-        function handleCloseModal() {
+        document.getElementById('btnCloseModal').onclick = () => {
             dom.modal.classList.remove('show');
-            
-            // Eliminar al perdedor
             if (state.lastEliminatedIdx !== null) {
                 state.items.splice(state.lastEliminatedIdx, 1);
                 state.lastEliminatedIdx = null;
                 renderList();
-
-                // ¿Hay un ganador final?
-                if (state.items.length === 1) {
-                    setTimeout(proclaimWinner, 500);
-                }
+                if (state.items.length === 1) setTimeout(proclaimWinner, 600);
             }
-        }
+        };
 
         function proclaimWinner() {
-            const winner = state.items[0];
-            dom.modalTitle.textContent = "¡GANADOR FINAL!";
-            dom.modalTitle.className = "text-xl font-bold text-yellow-500 uppercase tracking-wide";
-            dom.modalBar.className = "absolute top-0 left-0 w-full h-2 bg-yellow-500";
-            dom.winnerText.textContent = winner;
-            dom.modalIcon.innerHTML = '<i data-lucide="trophy" width="64" height="64"></i>';
-            
-            state.lastEliminatedIdx = null; // No eliminar a nadie más
+            dom.modalTitle.textContent = "OBJETIVO_FINAL_RESTANTE";
+            dom.winnerText.textContent = state.items[0];
+            dom.winnerText.className = "text-5xl font-black mb-8 text-yellow-400 cyber-font";
+            dom.modalIcon.innerHTML = '<i data-lucide="trophy" width="80" height="80"></i>';
+            sounds.win();
             dom.modal.classList.add('show');
-            fireConfetti();
             lucide.createIcons();
+            state.lastEliminatedIdx = null;
         }
 
-        // --- Eventos ---
-        dom.form.addEventListener('submit', (e) => {
+        function removeItem(i) { state.items.splice(i,1); renderList(); }
+        document.getElementById('addForm').onsubmit = (e) => {
             e.preventDefault();
             const val = dom.input.value.trim();
-            if (val) { state.items.push(val); dom.input.value = ''; renderList(); }
-        });
-
-        dom.resetBtn.addEventListener('click', () => {
-            if (confirm("¿Reiniciar la lista?")) {
-                state.items = ["Participante A", "Participante B", "Participante C"];
-                renderList();
-            }
-        });
-
-        dom.spinBtn.addEventListener('click', spin);
-        dom.closeModal.addEventListener('click', handleCloseModal);
-
-        // Confeti mejorado
-        function fireConfetti() {
-            const canvas = dom.confettiCanvas;
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let particles = Array.from({length: 150}, () => ({
-                x: canvas.width/2, y: canvas.height/2,
-                vx: (Math.random()-0.5)*25, vy: (Math.random()-0.5)*25,
-                life: 100, color: `hsl(${Math.random()*360},100%,50%)`,
-                size: Math.random()*8+4
-            }));
-
-            function anim() {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                particles.forEach(p => {
-                    if (p.life > 0) {
-                        p.x+=p.vx; p.y+=p.vy; p.vy+=0.3; p.life--;
-                        ctx.fillStyle=p.color; ctx.beginPath();
-                        ctx.arc(p.x,p.y,p.size,0,6.28); ctx.fill();
-                    }
-                });
-                if (particles.some(p => p.life > 0)) requestAnimationFrame(anim);
-            }
-            anim();
-        }
+            if(val) { state.items.push(val); dom.input.value=''; renderList(); audioCtx.resume(); }
+        };
+        document.getElementById('btnReset').onclick = () => { if(confirm("¿BORRAR TODO?")) { state.items=[]; renderList(); } };
+        dom.spinBtn.onclick = spin;
 
         renderList();
     </script>
