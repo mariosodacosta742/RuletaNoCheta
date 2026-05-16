@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>AloneGarciaTV - Streamer Wheel</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+    --pink:#ec4899;
+    --green:#53fc18;
+    --dark:#020617;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#020617;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* =========================
+BACKGROUND
+========================= */
+
+.bg-grid{
+    position:fixed;
+    inset:0;
+    background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-5;
+    animation:gridMove 12s linear infinite;
+}
+
+@keyframes gridMove{
+    from{ transform:translateY(0); }
+    to{ transform:translateY(40px); }
+}
+
+.cyber-glow{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left, rgba(236,72,153,.15), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(83,252,24,.12), transparent 30%),
+    radial-gradient(circle at center, rgba(59,130,246,.10), transparent 40%);
+    z-index:-4;
+}
+
+/* =========================
+SCANLINES
+========================= */
+
+.scanlines::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(255,255,255,0.02) 51%
+    );
+    background-size:100% 4px;
+    pointer-events:none;
+    z-index:100;
+}
+
+/* =========================
+TEXT
+========================= */
+
+.cyber-font{
+    font-family:'Orbitron',sans-serif;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.stream-header{
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid rgba(236,72,153,.2);
+}
+
+.stream-header::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.05),
+        transparent
+    );
+
+    animation:shine 6s linear infinite;
+}
+
+@keyframes shine{
+    from{
+        transform:translateX(-100%);
+    }
+    to{
+        transform:translateX(100%);
+    }
+}
+
+/* =========================
+BUTTONS
+========================= */
+
+.cyber-btn{
+    background:linear-gradient(135deg,#ec4899,#be185d);
+    box-shadow:0 0 25px rgba(236,72,153,.4);
+    transition:.25s;
+}
+
+.cyber-btn:hover{
+    transform:translateY(-3px) scale(1.03);
+}
+
+/* =========================
+SOCIAL CARDS
+========================= */
+
+.social-card{
+    transition:.25s;
+    backdrop-filter:blur(10px);
+}
+
+.social-card:hover{
+    transform:translateY(-3px) scale(1.02);
+}
+
+/* =========================
+WHEEL
+========================= */
+
+#wheelContainer{
+    transition:
+    transform 7s cubic-bezier(0.1,0,0.1,1);
+
+    box-shadow:
+    0 0 40px rgba(236,72,153,.2),
+    0 0 100px rgba(236,72,153,.15);
+}
+
+#wheelArrow{
+    filter:drop-shadow(0 0 20px rgba(236,72,153,.8));
+}
+
+/* =========================
+PARTICLES
+========================= */
+
+.particle{
+    position:fixed;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:.4;
+    animation:float linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(100vh);
+    }
+    to{
+        transform:translateY(-100vh);
+    }
+}
+
+/* =========================
+MODAL
+========================= */
+
+#winnerModal{
+    display:none;
+}
+
+#winnerModal.show{
+    display:flex;
+}
+
+.glass{
+    background:rgba(15,23,42,.85);
+    backdrop-filter:blur(18px);
+}
+
+/* =========================
+VIDEOS
+========================= */
+
+.video-card{
+    transition:.3s;
+}
+
+.video-card:hover{
+    transform:translateY(-5px) scale(1.02);
+}
+
+iframe{
+    transition:.3s;
+}
+
+.video-card:hover iframe{
+    transform:scale(1.03);
+}
+
+</style>
+
+</head>
+
+<body class="scanlines">
+
+<div class="bg-grid"></div>
+<div class="cyber-glow"></div>
+
+<!-- PARTICLES -->
+
+<div id="particles"></div>
+
+<!-- =========================
+HEADER
+========================= -->
+
+<header class="stream-header">
+
+    <!-- BANNER -->
+
+    <div class="relative h-[240px] md:h-[320px] overflow-hidden">
+
+        <img
+            src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1600&auto=format&fit=crop"
+            class="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent"></div>
+
+    </div>
+
+    <!-- PROFILE -->
+
+    <div class="relative z-20 px-6 lg:px-12 pb-10 -mt-20">
+
+        <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-end">
+
+            <!-- AVATAR -->
+
+            <div class="relative">
+
+                <div class="w-40 h-40 rounded-full border-[6px] border-[#020617] overflow-hidden shadow-[0_0_40px_rgba(236,72,153,.4)]">
+
+                    <img
+                        src=""
+                        class="w-full h-full object-cover"
+                    />
+
+                </div>
+
+                <div class="absolute bottom-2 right-2 px-3 py-1 rounded-full bg-red-600 text-xs font-black cyber-font flex items-center gap-2">
+
+                    <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+
+                    LIVE
+
+                </div>
+
+            </div>
+
+            <!-- INFO -->
+
+            <div class="flex-1">
+
+                <h1 class="text-5xl font-black cyber-font">
+                    AloneGarciaTV
+                </h1>
+
+                <p class="text-slate-300 mt-2">
+                    Streamer | IRL | Gaming | Comunidad | Tecnología
+                </p>
+
+                <!-- SOCIALS -->
+
+                <div class="flex flex-wrap gap-4 mt-6">
+
+                    <!-- YOUTUBE -->
+
+                    <a
+                        href="https://www.youtube.com/@AloneGarciaTv"
+                        target="_blank"
+                        class="social-card px-5 py-3 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center gap-3"
+                    >
+
+                        <i data-lucide="youtube" class="text-red-500"></i>
+
+                        <span class="font-bold">
+                            YouTube
+                        </span>
+
+                    </a>
+
+                    <!-- FACEBOOK -->
+
+                    <a
+                        href="https://www.facebook.com/AloneGarciaTv"
+                        target="_blank"
+                        class="social-card px-5 py-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center gap-3"
+                    >
+
+                        <i data-lucide="facebook" class="text-blue-500"></i>
+
+                        <span class="font-bold">
+                            Facebook
+                        </span>
+
+                    </a>
+
+                    <!-- KICK -->
+
+                    <a
+                        href="https://kick.com/alonegarciatv"
+                        target="_blank"
+                        class="social-card px-5 py-3 rounded-2xl bg-[#53fc18]/10 border border-[#53fc18]/30 flex items-center gap-3"
+                    >
+
+                        <div class="w-5 h-5 rounded bg-[#53fc18]"></div>
+
+                        <span class="font-bold text-[#53fc18]">
+                            Kick
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- =========================
+MAIN
+========================= -->
+
+<div class="w-full min-h-screen flex flex-col lg:flex-row">
+
+    <!-- SIDEBAR -->
+
+    <aside class="w-full lg:w-[380px] border-r border-white/10 bg-black/20 backdrop-blur-xl p-6">
+
+        <h2 class="text-2xl font-black cyber-font text-pink-500 mb-6">
+            OBJECTIVES
+        </h2>
+
+        <!-- INPUT -->
+
+        <form id="addForm" class="flex gap-2 mb-6">
+
+            <input
+                id="newItemInput"
+                type="text"
+                placeholder="Nuevo objetivo..."
+                class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500"
+            />
+
+            <button class="cyber-btn px-5 rounded-xl font-black">
+                +
+            </button>
+
+        </form>
+
+        <!-- INFO -->
+
+        <div class="flex items-center justify-between mb-4">
+
+            <p id="optionsCount" class="text-xs uppercase tracking-[0.3em] text-slate-400">
+                Objetivos: 0
+            </p>
+
+            <button
+                id="btnReset"
+                class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl text-sm font-bold"
+            >
+                Reset
+            </button>
+
+        </div>
+
+        <!-- LIST -->
+
+        <div class="space-y-3 overflow-y-auto max-h-[500px]" id="itemList"></div>
+
+    </aside>
+
+    <!-- CENTER -->
+
+    <main class="flex-1 flex flex-col items-center justify-center p-6">
+
+        <!-- LIVE BAR -->
+
+        <div class="mb-8">
+
+            <div class="px-6 py-3 rounded-full bg-black/40 border border-pink-500/30 flex items-center gap-3 backdrop-blur-xl">
+
+                <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+
+                <p class="cyber-font text-sm tracking-[0.3em]">
+                    STREAM MODE
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- WHEEL -->
+
+        <div class="relative">
+
+            <!-- ARROW -->
+
+            <div id="wheelArrow" class="absolute top-[-40px] left-1/2 -translate-x-1/2 z-30">
+
+                <svg width="70" height="70" viewBox="0 0 60 60">
+                    <path d="M0 0 L60 0 L30 45 Z" fill="#ec4899"/>
+                </svg>
+
+            </div>
+
+            <!-- WHEEL -->
+
+            <div
+                id="wheelContainer"
+                class="rounded-full border-[14px] border-black"
+            >
+
+                <canvas
+                    id="wheelCanvas"
+                    class="rounded-full w-[320px] h-[320px] md:w-[650px] md:h-[650px]"
+                ></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <button
+            id="btnSpin"
+            class="cyber-btn mt-10 px-16 py-5 rounded-2xl text-2xl font-black cyber-font"
+        >
+            ELIMINAR
+        </button>
+
+    </main>
+
+</div>
+
+<!-- =========================
+VIDEOS
+========================= -->
+
+<section class="px-6 lg:px-12 py-12">
+
+    <div class="mb-8">
+
+        <h2 class="text-4xl font-black cyber-font text-pink-500">
+            VIDEOS STREAM
+        </h2>
+
+        <p class="text-slate-400 mt-2">
+            Contenido reciente de AloneGarciaTV
+        </p>
+
+    </div>
+
+    <!-- GRID -->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+        <!-- CARD -->
+
+        <div class="video-card rounded-3xl overflow-hidden bg-slate-900/60 border border-pink-500/10">
+
+            <div class="aspect-video">
+
+                <iframe
+                    class="w-full h-full"
+                    src="https://www.youtube.com/embed/jfKfPfyJRdk"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+
+            </div>
+
+            <div class="p-5">
+
+                <h3 class="font-black text-lg">
+                    Stream LoFi Chill
+                </h3>
+
+                <p class="text-slate-400 text-sm mt-2">
+                    Música y contenido relajado para streams.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+
+        <div class="video-card rounded-3xl overflow-hidden bg-slate-900/60 border border-pink-500/10">
+
+            <div class="aspect-video">
+
+                <iframe
+                    class="w-full h-full"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+
+            </div>
+
+            <div class="p-5">
+
+                <h3 class="font-black text-lg">
+                    Directo Gaming
+                </h3>
+
+                <p class="text-slate-400 text-sm mt-2">
+                    Gameplay y entretenimiento en vivo.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+
+        <div class="video-card rounded-3xl overflow-hidden bg-slate-900/60 border border-pink-500/10">
+
+            <div class="aspect-video">
+
+                <iframe
+                    class="w-full h-full"
+                    src="https://www.youtube.com/embed/5qap5aO4i9A"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+
+            </div>
+
+            <div class="p-5">
+
+                <h3 class="font-black text-lg">
+                    Comunidad AloneGarciaTV
+                </h3>
+
+                <p class="text-slate-400 text-sm mt-2">
+                    Charlas, IRL y comunidad streamer.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+MODAL
+========================= -->
+
+<div
+    id="winnerModal"
+    class="fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-xl"
+>
+
+    <div class="glass border border-pink-500/30 rounded-3xl p-10 w-[90%] max-w-md text-center">
+
+        <div class="mb-6 flex justify-center text-pink-500" id="modalIcon"></div>
+
+        <p class="text-xs tracking-[0.5em] text-slate-400 mb-4 cyber-font">
+            SYSTEM RESULT
+        </p>
+
+        <h2
+            id="winnerText"
+            class="text-5xl font-black cyber-font text-pink-500 break-words"
+        ></h2>
+
+        <button
+            id="btnCloseModal"
+            class="cyber-btn w-full py-4 rounded-2xl mt-8 font-black cyber-font"
+        >
+            CONTINUAR
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+lucide.createIcons();
+
+/* =========================
+PARTICLES
+========================= */
+
+const particlesContainer = document.getElementById("particles");
+
+for(let i=0;i<120;i++){
+
+    const p = document.createElement("div");
+
+    p.className = "particle";
+
+    p.style.left = Math.random()*100+"vw";
+
+    p.style.animationDuration = 5 + Math.random()*10+"s";
+
+    p.style.opacity = Math.random();
+
+    particlesContainer.appendChild(p);
+}
+
+/* =========================
+AUDIO
+========================= */
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(f,t,v,d){
+
+    const o = audioCtx.createOscillator();
+
+    const g = audioCtx.createGain();
+
+    o.type=t;
+
+    o.frequency.setValueAtTime(f,audioCtx.currentTime);
+
+    g.gain.setValueAtTime(v,audioCtx.currentTime);
+
+    g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+d);
+
+    o.connect(g);
+
+    g.connect(audioCtx.destination);
+
+    o.start();
+
+    o.stop(audioCtx.currentTime+d);
+}
+
+const sounds={
+
+    eliminated:()=>{
+        playSound(60,'sawtooth',0.4,0.7);
+    },
+
+    win:()=>{
+        [261,329,392,523].forEach((f,i)=>{
+            setTimeout(()=>{
+                playSound(f,'triangle',0.2,0.5)
+            },i*150)
+        });
+    }
+};
+
+/* =========================
+STATE
+========================= */
+
+const state = {
+
+    items: JSON.parse(localStorage.getItem("wheelItems")) || [],
+
+    rotation:0,
+
+    isSpinning:false,
+
+    lastEliminatedIdx:null
+};
+
+/* =========================
+DOM
+========================= */
+
+const dom = {
+
+    canvas:document.getElementById("wheelCanvas"),
+
+    container:document.getElementById("wheelContainer"),
+
+    itemList:document.getElementById("itemList"),
+
+    input:document.getElementById("newItemInput"),
+
+    spinBtn:document.getElementById("btnSpin"),
+
+    modal:document.getElementById("winnerModal"),
+
+    winnerText:document.getElementById("winnerText"),
+
+    modalIcon:document.getElementById("modalIcon")
+};
+
+/* =========================
+SAVE
+========================= */
+
+function saveData(){
+
+    localStorage.setItem(
+        "wheelItems",
+        JSON.stringify(state.items)
+    );
+}
+
+/* =========================
+RENDER LIST
+========================= */
+
+function renderList(){
+
+    dom.itemList.innerHTML="";
+
+    document.getElementById("optionsCount")
+    .textContent=`OBJETIVOS: ${state.items.length}`;
+
+    state.items.forEach((item,idx)=>{
+
+        const div=document.createElement("div");
+
+        div.className=`
+        bg-slate-900/60
+        border
+        border-pink-500/20
+        rounded-2xl
+        p-4
+        flex
+        justify-between
+        items-center
+        `;
+
+        div.innerHTML=`
+        <span class="font-bold uppercase text-sm">${item}</span>
+
+        <button onclick="removeItem(${idx})"
+        class="text-red-500 hover:scale-125 transition-all">
+
+        <i data-lucide="x"></i>
+
+        </button>
+        `;
+
+        dom.itemList.appendChild(div);
+    });
+
+    lucide.createIcons();
+
+    dom.spinBtn.disabled = state.items.length < 2;
+
+    drawWheel();
+
+    saveData();
+}
+
+/* =========================
+DRAW WHEEL
+========================= */
+
+function drawWheel(){
+
+    const ctx = dom.canvas.getContext("2d");
+
+    const size = 1200;
+
+    dom.canvas.width = size;
+    dom.canvas.height = size;
+
+    const center = size / 2;
+    const radius = 560;
+
+    ctx.clearRect(0,0,size,size);
+
+    if(state.items.length === 0) return;
+
+    const arc = (2 * Math.PI) / state.items.length;
+
+    const colors = [
+        "#ec4899",
+        "#8b5cf6",
+        "#06b6d4",
+        "#22c55e",
+        "#f59e0b",
+        "#ef4444",
+        "#3b82f6"
+    ];
+
+    state.items.forEach((item,i)=>{
+
+        ctx.beginPath();
+
+        ctx.moveTo(center,center);
+
+        ctx.arc(
+            center,
+            center,
+            radius,
+            i * arc,
+            (i + 1) * arc
+        );
+
+        ctx.fillStyle = colors[i % colors.length];
+
+        ctx.shadowColor = colors[i % colors.length];
+
+        ctx.shadowBlur = 25;
+
+        ctx.fill();
+
+        ctx.lineWidth = 4;
+
+        ctx.strokeStyle = "#020617";
+
+        ctx.stroke();
+
+        /* TEXT */
+
+        ctx.save();
+
+        ctx.translate(center, center);
+
+        ctx.rotate(i * arc + arc / 2);
+
+        ctx.fillStyle = "#fff";
+
+        ctx.textAlign = "center";
+
+        ctx.textBaseline = "middle";
+
+        const text = item.toUpperCase();
+
+        let fontSize = 42;
+
+        if(text.length > 10) fontSize = 34;
+        if(text.length > 16) fontSize = 28;
+        if(text.length > 22) fontSize = 22;
+        if(text.length > 30) fontSize = 18;
+
+        ctx.font = `900 ${fontSize}px Orbitron`;
+
+        const words = text.split(" ");
+
+        let lines = [];
+
+        let currentLine = "";
+
+        words.forEach(word=>{
+
+            const testLine = currentLine + word + " ";
+
+            const metrics = ctx.measureText(testLine);
+
+            if(metrics.width > 220){
+
+                lines.push(currentLine);
+
+                currentLine = word + " ";
+
+            }else{
+
+                currentLine = testLine;
+            }
+        });
+
+        lines.push(currentLine);
+
+        const lineHeight = fontSize + 4;
+
+        const startY = -(lines.length - 1) * lineHeight / 2;
+
+        lines.forEach((line,index)=>{
+
+            ctx.fillText(
+                line.trim(),
+                radius - 180,
+                startY + (index * lineHeight)
+            );
+
+        });
+
+        ctx.restore();
+
+    });
+
+}
+
+/* =========================
+SPIN
+========================= */
+
+function spin(){
+
+    if(state.isSpinning)return;
+
+    if(state.items.length<2)return;
+
+    audioCtx.resume();
+
+    state.isSpinning=true;
+
+    dom.spinBtn.disabled=true;
+
+    const extra=Math.floor(Math.random()*360);
+
+    state.rotation += (360*8)+extra;
+
+    dom.container.style.transform=
+    `rotate(${state.rotation}deg)`;
+}
+
+dom.container.addEventListener("transitionend",()=>{
+
+    state.isSpinning=false;
+
+    const arcDeg=360/state.items.length;
+
+    const finalAngle=state.rotation%360;
+
+    const index=Math.floor(
+        ((270-finalAngle+360)%360)/arcDeg
+    );
+
+    state.lastEliminatedIdx=index;
+
+    dom.winnerText.textContent=
+    state.items[index];
+
+    dom.modalIcon.innerHTML=
+    `<i data-lucide="skull" width="90" height="90"></i>`;
+
+    sounds.eliminated();
+
+    dom.modal.classList.add("show");
+
+    lucide.createIcons();
+
+});
+
+/* =========================
+MODAL CLOSE
+========================= */
+
+document.getElementById("btnCloseModal")
+.onclick=()=>{
+
+    dom.modal.classList.remove("show");
+
+    if(state.lastEliminatedIdx!==null){
+
+        state.items.splice(
+            state.lastEliminatedIdx,
+            1
+        );
+
+        state.lastEliminatedIdx=null;
+
+        renderList();
+
+        if(state.items.length===1){
+
+            setTimeout(proclaimWinner,500);
+        }
+    }
+};
+
+/* =========================
+WINNER
+========================= */
+
+function proclaimWinner(){
+
+    dom.winnerText.textContent=
+    state.items[0];
+
+    dom.modalIcon.innerHTML=
+    `<i data-lucide="trophy" width="90" height="90"></i>`;
+
+    sounds.win();
+
+    dom.modal.classList.add("show");
+
+    lucide.createIcons();
+}
+
+/* =========================
+REMOVE
+========================= */
+
+function removeItem(i){
+
+    state.items.splice(i,1);
+
+    renderList();
+}
+
+/* =========================
+ADD
+========================= */
+
+document.getElementById("addForm")
+.onsubmit=(e)=>{
+
+    e.preventDefault();
+
+    const val=dom.input.value.trim();
+
+    if(!val)return;
+
+    state.items.push(val);
+
+    dom.input.value="";
+
+    renderList();
+};
+
+/* =========================
+RESET
+========================= */
+
+document.getElementById("btnReset")
+.onclick=()=>{
+
+    if(confirm("¿BORRAR TODO?")){
+
+        state.items=[];
+
+        renderList();
+    }
+};
+
+/* =========================
+BUTTON
+========================= */
+
+dom.spinBtn.onclick=spin;
+
+/* =========================
+INIT
+========================= */
+
+renderList();
+
+</script>
+
+</body>
+</html>
