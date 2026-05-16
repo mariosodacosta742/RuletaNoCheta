@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>AloneGarciaTV - Cyber Pizza Wheel</title>
+<title>AloneGarciaTV - Pizza Sabados </title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,7 +34,7 @@ body{
 }
 
 /* =========================
-BACKGROUND STREAMER
+BACKGROUND
 ========================= */
 
 .bg-grid{
@@ -102,14 +103,16 @@ SCROLLBAR
 }
 
 /* =========================
-KICK CARD
+SOCIAL CARDS
 ========================= */
 
-.kick-card{
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(83,252,24,.3);
-    backdrop-filter:blur(10px);
-    box-shadow:0 0 25px rgba(83,252,24,.12);
+.social-card{
+    backdrop-filter:blur(12px);
+    transition:all .3s ease;
+}
+
+.social-card:hover{
+    transform:translateY(-3px) scale(1.02);
 }
 
 /* =========================
@@ -119,6 +122,7 @@ WHEEL
 #wheelContainer{
     transition:
     transform 7s cubic-bezier(0.1,0,0.1,1);
+
     box-shadow:
     0 0 40px rgba(236,72,153,.25),
     0 0 120px rgba(236,72,153,.15);
@@ -134,8 +138,11 @@ BUTTONS
 
 .cyber-btn{
     background:linear-gradient(135deg,#ec4899,#be185d);
+
     box-shadow:
     0 0 20px rgba(236,72,153,.4);
+
+    transition:all .25s ease;
 }
 
 .cyber-btn:hover{
@@ -155,7 +162,7 @@ MODAL
 }
 
 .glass{
-    background:rgba(15,23,42,.8);
+    background:rgba(15,23,42,.85);
     backdrop-filter:blur(18px);
 }
 
@@ -182,6 +189,18 @@ PARTICLES
     }
 }
 
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:1024px){
+
+    body{
+        overflow:auto;
+    }
+
+}
+
 </style>
 </head>
 
@@ -194,10 +213,10 @@ PARTICLES
 <div id="particles"></div>
 
 <!-- MAIN -->
-<div class="w-full h-screen flex flex-col lg:flex-row">
+<div class="w-full min-h-screen flex flex-col lg:flex-row">
 
     <!-- SIDEBAR -->
-    <aside class="w-full lg:w-[380px] h-auto lg:h-full border-r border-white/10 bg-black/30 backdrop-blur-xl p-6 flex flex-col overflow-hidden">
+    <aside class="w-full lg:w-[390px] border-r border-white/10 bg-black/30 backdrop-blur-xl p-6 flex flex-col overflow-hidden">
 
         <!-- TITLE -->
         <div class="mb-6">
@@ -207,7 +226,7 @@ PARTICLES
             </h1>
 
             <h2 class="text-xl cyber-font text-white tracking-[0.4em]">
-                PIZZA WHEEL
+                PIZZA 
             </h2>
 
             <p class="text-xs text-slate-400 mt-2 uppercase tracking-[0.3em]">
@@ -216,34 +235,95 @@ PARTICLES
 
         </div>
 
-        <!-- KICK CARD -->
-        <a
-            href="https://kick.com/alonegarciatv"
-            target="_blank"
-            class="kick-card rounded-2xl p-4 mb-6 transition-all hover:scale-[1.02]"
-        >
+        <!-- SOCIALS -->
 
-            <div class="flex items-center gap-4">
+        <div class="space-y-4 mb-6">
 
-                <div class="w-14 h-14 rounded-xl bg-[#53fc18] flex items-center justify-center text-black font-black text-2xl">
-                    K
+            <!-- KICK -->
+            <a
+                href="https://kick.com/alonegarciatv"
+                target="_blank"
+                class="social-card rounded-2xl p-4 block bg-[#53fc18]/10 border border-[#53fc18]/30"
+            >
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-14 h-14 rounded-xl bg-[#53fc18] flex items-center justify-center text-black font-black text-2xl">
+                        K
+                    </div>
+
+                    <div>
+                        <p class="text-[#53fc18] font-black cyber-font text-lg">
+                            KICK
+                        </p>
+
+                        <p class="text-sm text-slate-300">
+                            AloneGarciaTV
+                        </p>
+                    </div>
+
                 </div>
 
-                <div>
-                    <p class="text-[#53fc18] font-black cyber-font text-lg">
-                        KICK CHANNEL
-                    </p>
+            </a>
 
-                    <p class="text-sm text-slate-300">
-                        kick.com/alonegarciatv
-                    </p>
+            <!-- YOUTUBE -->
+            <a
+                href="https://www.youtube.com/@AloneGarciaTv"
+                target="_blank"
+                class="social-card rounded-2xl p-4 block bg-red-500/10 border border-red-500/30"
+            >
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-14 h-14 rounded-xl bg-red-600 flex items-center justify-center">
+                        <i data-lucide="youtube" class="w-8 h-8 text-white"></i>
+                    </div>
+
+                    <div>
+                        <p class="text-red-400 font-black cyber-font text-lg">
+                            YOUTUBE
+                        </p>
+
+                        <p class="text-sm text-slate-300">
+                            AloneGarciaTv
+                        </p>
+                    </div>
+
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+            <!-- FACEBOOK -->
+            <a
+                href="https://www.facebook.com/AloneGarciaTv"
+                target="_blank"
+                class="social-card rounded-2xl p-4 block bg-blue-500/10 border border-blue-500/30"
+            >
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center">
+                        <i data-lucide="facebook" class="w-8 h-8 text-white"></i>
+                    </div>
+
+                    <div>
+                        <p class="text-blue-400 font-black cyber-font text-lg">
+                            FACEBOOK
+                        </p>
+
+                        <p class="text-sm text-slate-300">
+                            AloneGarciaTv
+                        </p>
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
 
         <!-- INPUT -->
+
         <form id="addForm" class="flex gap-2 mb-6">
 
             <input
@@ -259,7 +339,8 @@ PARTICLES
 
         </form>
 
-        <!-- OPTIONS -->
+        <!-- INFO -->
+
         <div class="flex items-center justify-between mb-4">
 
             <p id="optionsCount" class="text-xs uppercase tracking-[0.3em] text-slate-400">
@@ -276,6 +357,7 @@ PARTICLES
         </div>
 
         <!-- LIST -->
+
         <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
 
             <ul id="itemList" class="space-y-3"></ul>
@@ -285,9 +367,11 @@ PARTICLES
     </aside>
 
     <!-- CENTER -->
+
     <main class="flex-1 flex flex-col items-center justify-center relative p-6">
 
-        <!-- TOP STREAM BAR -->
+        <!-- LIVE BAR -->
+
         <div class="absolute top-4 left-1/2 -translate-x-1/2 z-20">
 
             <div class="bg-black/40 border border-pink-500/30 px-6 py-3 rounded-full backdrop-blur-xl">
@@ -307,9 +391,11 @@ PARTICLES
         </div>
 
         <!-- WHEEL -->
+
         <div class="relative">
 
             <!-- ARROW -->
+
             <div id="wheelArrow" class="absolute top-[-40px] left-1/2 -translate-x-1/2 z-30">
 
                 <svg width="70" height="70" viewBox="0 0 60 60">
@@ -318,7 +404,8 @@ PARTICLES
 
             </div>
 
-            <!-- WHEEL -->
+            <!-- CONTAINER -->
+
             <div
                 id="wheelContainer"
                 class="rounded-full border-[14px] border-black"
@@ -334,6 +421,7 @@ PARTICLES
         </div>
 
         <!-- BUTTON -->
+
         <button
             id="btnSpin"
             class="cyber-btn mt-10 px-16 py-5 rounded-2xl text-2xl font-black cyber-font tracking-[0.2em]"
@@ -346,6 +434,7 @@ PARTICLES
 </div>
 
 <!-- MODAL -->
+
 <div
     id="winnerModal"
     class="fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-xl"
@@ -430,8 +519,6 @@ function playSound(f,t,v,d){
 }
 
 const sounds={
-
-    tick:()=>playSound(200,'square',0.04,0.05),
 
     eliminated:()=>{
         playSound(60,'sawtooth',0.4,0.7);
@@ -553,32 +640,33 @@ function drawWheel(){
 
     const ctx = dom.canvas.getContext("2d");
 
-    const size=1200;
+    const size = 1200;
 
-    dom.canvas.width=size;
+    dom.canvas.width = size;
+    dom.canvas.height = size;
 
-    dom.canvas.height=size;
-
-    const center=600;
-
-    const radius=560;
+    const center = size / 2;
+    const radius = 560;
 
     ctx.clearRect(0,0,size,size);
 
-    if(state.items.length===0)return;
+    if(state.items.length === 0) return;
 
-    const arc=(2*Math.PI)/state.items.length;
+    const arc = (2 * Math.PI) / state.items.length;
 
-    const colors=[
+    const colors = [
         "#ec4899",
         "#8b5cf6",
         "#06b6d4",
         "#22c55e",
         "#f59e0b",
-        "#ef4444"
+        "#ef4444",
+        "#3b82f6"
     ];
 
     state.items.forEach((item,i)=>{
+
+        // SEGMENTO
 
         ctx.beginPath();
 
@@ -588,41 +676,88 @@ function drawWheel(){
             center,
             center,
             radius,
-            i*arc,
-            (i+1)*arc
+            i * arc,
+            (i + 1) * arc
         );
 
-        ctx.fillStyle=colors[i%colors.length];
+        ctx.fillStyle = colors[i % colors.length];
 
-        ctx.shadowColor=colors[i%colors.length];
+        ctx.shadowColor = colors[i % colors.length];
 
-        ctx.shadowBlur=30;
+        ctx.shadowBlur = 25;
 
         ctx.fill();
 
-        ctx.lineWidth=4;
+        ctx.lineWidth = 4;
 
-        ctx.strokeStyle="#020617";
+        ctx.strokeStyle = "#020617";
 
         ctx.stroke();
 
+        // TEXTO
+
         ctx.save();
 
-        ctx.translate(center,center);
+        ctx.translate(center, center);
 
-        ctx.rotate(i*arc + arc/2);
+        ctx.rotate(i * arc + arc / 2);
 
-        ctx.textAlign="right";
+        ctx.fillStyle = "#fff";
 
-        ctx.fillStyle="white";
+        ctx.textAlign = "center";
 
-        ctx.font="900 42px Orbitron";
+        ctx.textBaseline = "middle";
 
-        ctx.fillText(
-            item.toUpperCase(),
-            radius-60,
-            15
-        );
+        const text = item.toUpperCase();
+
+        let fontSize = 42;
+
+        if(text.length > 10) fontSize = 34;
+        if(text.length > 16) fontSize = 28;
+        if(text.length > 22) fontSize = 22;
+        if(text.length > 30) fontSize = 18;
+
+        ctx.font = `900 ${fontSize}px Orbitron`;
+
+        const words = text.split(" ");
+
+        let lines = [];
+
+        let currentLine = "";
+
+        words.forEach(word=>{
+
+            const testLine = currentLine + word + " ";
+
+            const metrics = ctx.measureText(testLine);
+
+            if(metrics.width > 220){
+
+                lines.push(currentLine);
+
+                currentLine = word + " ";
+
+            }else{
+
+                currentLine = testLine;
+            }
+        });
+
+        lines.push(currentLine);
+
+        const lineHeight = fontSize + 4;
+
+        const startY = -(lines.length - 1) * lineHeight / 2;
+
+        lines.forEach((line,index)=>{
+
+            ctx.fillText(
+                line.trim(),
+                radius - 180,
+                startY + (index * lineHeight)
+            );
+
+        });
 
         ctx.restore();
 
@@ -775,7 +910,7 @@ document.getElementById("btnReset")
 };
 
 /* =========================
-SPIN BUTTON
+BUTTON
 ========================= */
 
 dom.spinBtn.onclick=spin;
